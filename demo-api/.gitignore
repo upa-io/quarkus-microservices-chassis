@@ -17,6 +17,7 @@ bin/
 *.ipr
 *.iml
 *.iws
+/.idea/workspace.xml
 
 # NetBeans
 nb-configuration.xml
