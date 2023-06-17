@@ -45,7 +45,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4.6.0
         with:
-          images: ${{ github.repository }}
+          images: ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -64,6 +64,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ join(map(steps.meta.outputs.tags, 'ghcr.io/' + github.repository_owner + '/github.repository:'), '\n') }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
