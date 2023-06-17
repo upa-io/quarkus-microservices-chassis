@@ -38,6 +38,44 @@ jobs:
       if: ${{ success() }}
       run: mvn -B package --file pom.xml -DskipTests
 
+    - name: Resolve build successful and add build error label
+      if: ${{ failure() && contains(github.event.pull_request.labels.*.name, 'Build successful') }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.removeLabel({
+            issue_number: context.payload.pull_request.number,
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             name: 'Build successful'
+           });
+          
+           github.rest.issues.addLabels({
+             issue_number: context.payload.pull_request.number,
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             labels: ['Build error']
+          })
+
+    - name: Resolve build error and add build successful label
+      if: ${{ success() && contains(github.event.pull_request.labels.*.name, 'Build error') }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.removeLabel({
+            issue_number: context.payload.pull_request.number,
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             name: 'Build error'
+           });
+          
+           github.rest.issues.addLabels({
+             issue_number: context.payload.pull_request.number,
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             labels: ['Build successful']
+          })
+
     - name: Add label build successful to PR
       if: ${{ success() }}
       uses: actions/github-script@v6
