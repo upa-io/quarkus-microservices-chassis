@@ -36,10 +36,34 @@ jobs:
     
     - name: Build with Maven
       if: ${{ success() }}
-      run: mvn -B package --file pom.xml -DskipTests
+      run: |
+        if mvn -B package --file pom.xml -DskipTests; then
+          echo "BUILD_STATUS=true" >> $GITHUB_ENV
+        else
+          echo "BUILD_STATUS=false" >> $GITHUB_ENV
+        fi
+
+    - name: Resolve build error and add build successful label
+      if: ${{ env.BUILD_STATUS && contains(github.event.pull_request.labels.*.name, 'build error') }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.removeLabel({
+            issue_number: context.payload.pull_request.number,
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             name: 'build error'
+           });
+
+           github.rest.issues.addLabels({
+             issue_number: context.payload.pull_request.number,
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             labels: ['build successful']
+          })
 
     - name: Resolve build successful and add build error label
-      if: ${{ failure() && contains(github.event.pull_request.labels.*.name, 'build successful') }}
+      if: ${{ !env.BUILD_STATUS && contains(github.event.pull_request.labels.*.name, 'build successful') }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -57,27 +81,8 @@ jobs:
              labels: ['build error']
           })
 
-    - name: Resolve build error and add build successful label
-      if: ${{ success() && contains(github.event.pull_request.labels.*.name, 'build error') }}
-      uses: actions/github-script@v6
-      with:
-        script: |
-          github.rest.issues.removeLabel({
-            issue_number: context.payload.pull_request.number,
-             owner: context.repo.owner,
-             repo: context.repo.repo,
-             name: 'build error'
-           });
-          
-           github.rest.issues.addLabels({
-             issue_number: context.payload.pull_request.number,
-             owner: context.repo.owner,
-             repo: context.repo.repo,
-             labels: ['build successful']
-          })
-
     - name: Add label build successful to PR
-      if: ${{ success() && !contains(github.event.pull_request.labels.*.name, 'build successful') }}
+      if: ${{ env.BUILD_STATUS && !contains(github.event.pull_request.labels.*.name, 'build successful') }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -89,7 +94,7 @@ jobs:
           })
 
     - name: Add label build error to PR
-      if: ${{ failure() }} && !contains(github.event.pull_request.labels.*.name, 'build error') }}
+      if: ${{ !env.BUILD_STATUS }} && !contains(github.event.pull_request.labels.*.name, 'build error') }}
       uses: actions/github-script@v6
       with:
         script: |
