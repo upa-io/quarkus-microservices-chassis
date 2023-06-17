@@ -42,7 +42,7 @@ jobs:
       if: ${{ success() }}
       uses: actions/github-script@v6.4.1
       with:
-        github-token: ${{ secrets.PR_ADD_LABEL_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const { data: pullRequest } = await github.pulls.get({
             owner: context.repo.owner,
@@ -59,7 +59,7 @@ jobs:
       if: ${{ failure() }}
       uses: actions/github-script@v6.4.1
       with:
-        github-token: ${{ secrets.PR_ADD_LABEL_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const { data: pullRequest } = await github.pulls.get({
             owner: context.repo.owner,
