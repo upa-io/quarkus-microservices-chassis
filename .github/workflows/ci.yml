@@ -78,9 +78,9 @@ jobs:
         push: true
         tags: |
           user/app:latest
-          user/app:${{ env.VERSION }}
+          user/app:1.0.0-SNAPSHOT
           ghcr.io/user/app:latest
-          ghcr.io/user/app:${{ env.VERSION }}
+          ghcr.io/user/app:1.0.0-SNAPSHOT
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
