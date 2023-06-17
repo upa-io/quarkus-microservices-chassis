@@ -94,7 +94,7 @@ jobs:
           })
 
     - name: Add label build error to PR
-      if: ${{ !env.BUILD_STATUS }} && !contains(github.event.pull_request.labels.*.name, 'build error') }}
+      if: ${{ !env.BUILD_STATUS && !contains(github.event.pull_request.labels.*.name, 'build error') }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -104,9 +104,6 @@ jobs:
             repo: context.repo.repo,
             labels: ['build error']
           })
-
-    - name: Print BUILD_STATUS
-      run: echo $BUILD_STATUS
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
