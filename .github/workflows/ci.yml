@@ -39,7 +39,7 @@ jobs:
       run: mvn -B package --file pom.xml -DskipTests
 
     - name: Resolve build successful and add build error label
-      if: ${{ failure() && contains(github.event.pull_request.labels.*.name, 'Build successful') }}
+      if: ${{ failure() && contains(github.event.pull_request.labels.*.name, 'build successful') }}
       uses: actions/github-script@v6
       with:
         script: |
@@ -58,7 +58,7 @@ jobs:
           })
 
     - name: Resolve build error and add build successful label
-      if: ${{ success() && contains(github.event.pull_request.labels.*.name, 'Build error') }}
+      if: ${{ success() && contains(github.event.pull_request.labels.*.name, 'build error') }}
       uses: actions/github-script@v6
       with:
         script: |
