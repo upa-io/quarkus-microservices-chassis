@@ -77,8 +77,8 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          ghcr.io/upaio/quarkus-microservices-chassis:latest
-          ghcr.io/upaio/quarkus-microservices-chassis:1.0.0-SNAPSHOT
+          ghcr.io/${{ github.repository_owner }}/quarkus-microservices-chassis:latest
+          ghcr.io/${{ github.repository_owner }}/quarkus-microservices-chassis:1.0.0-SNAPSHOT
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
