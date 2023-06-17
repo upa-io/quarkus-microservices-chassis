@@ -49,8 +49,8 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number
           });
-          const labels = pullRequest.labels.map(label => label.name);
-          if (labels.includes('build successful')) {
+          const labels = pullRequest.data.labels.map(label => label.name);
+          if (labels.includes('build error')) {
             await github.issues.removeLabel({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -75,7 +75,7 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number
           });
-          const labels = pullRequest.labels.map(label => label.name);
+          const labels = pullRequest.data.labels.map(label => label.name);
           if (labels.includes('build successful')) {
             await github.issues.removeLabel({
             owner: context.repo.owner,
