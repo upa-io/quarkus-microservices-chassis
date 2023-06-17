@@ -13,7 +13,7 @@ public class GreetingResource {
     private static final Logger LOG = Logger.getLogger(GreetingResource.class);
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public String hello() {
         LOG.debug("Hi from debug");
         LOG.info("Hi from info");
