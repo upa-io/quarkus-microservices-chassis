@@ -7,7 +7,7 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/demo-api-jvm .
+# docker build -f src/main/docker/Dockerfile -t quarkus/demo-api-jvm .
 #
 # Then run the container using:
 #
@@ -75,7 +75,7 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
-FROM registry.access.redhat.com/ubi8/openjdk-17:1.14
+FROM eclipse-temurin:19-jdk
 
 ENV LANGUAGE='en_US:en'
 

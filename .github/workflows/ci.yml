@@ -53,6 +53,35 @@ jobs:
       if: ${{ success() }}
       run: mvn -B package --file pom.xml -DskipTests
 
+    - name: Set up QEMU
+      if: ${{ success() }}
+      uses: docker/setup-qemu-action@v2.2.0
+
+    - name: Set up Docker Buildx
+      if: ${{ success() }}
+      uses: docker/setup-buildx-action@v2.7.0
+
+    - name: Login to GitHub Container Registry
+      if: ${{ success() }}
+      uses: docker/login-action@v2.2.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.REGISTRY_TOKEN }}
+
+    - name: Build and push
+      if: ${{ success() }}
+      uses: docker/build-push-action@v4.1.1
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: |
+          user/app:latest
+          user/app:${{ env.VERSION }}
+          ghcr.io/user/app:latest
+          ghcr.io/user/app:${{ env.VERSION }}
+
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3.0.2
