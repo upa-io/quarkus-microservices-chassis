@@ -50,7 +50,7 @@ jobs:
       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=upa-io_quarkus-microservices-chassis
     
     - name: Build with Maven
-      if: ${{ success() && needs.build-and-analyze.outputs.analysis_success == 'true' }}
+      if: ${{ success() }}
       run: mvn -B package --file pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
