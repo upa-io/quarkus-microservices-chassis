@@ -47,14 +47,14 @@ jobs:
             issue_number: context.payload.pull_request.number,
              owner: context.repo.owner,
              repo: context.repo.repo,
-             name: 'Build successful'
+             name: 'build successful'
            });
           
            github.rest.issues.addLabels({
              issue_number: context.payload.pull_request.number,
              owner: context.repo.owner,
              repo: context.repo.repo,
-             labels: ['Build error']
+             labels: ['build error']
           })
 
     - name: Resolve build error and add build successful label
@@ -66,14 +66,14 @@ jobs:
             issue_number: context.payload.pull_request.number,
              owner: context.repo.owner,
              repo: context.repo.repo,
-             name: 'Build error'
+             name: 'build error'
            });
           
            github.rest.issues.addLabels({
              issue_number: context.payload.pull_request.number,
              owner: context.repo.owner,
              repo: context.repo.repo,
-             labels: ['Build successful']
+             labels: ['build successful']
           })
 
     - name: Add label build successful to PR
@@ -85,7 +85,7 @@ jobs:
             issue_number: context.payload.pull_request.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            labels: ['Build successful']
+            labels: ['build successful']
           })
 
     - name: Add label build error to PR
@@ -97,7 +97,7 @@ jobs:
             issue_number: context.payload.pull_request.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            labels: ['Build error']
+            labels: ['build error']
           })
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
