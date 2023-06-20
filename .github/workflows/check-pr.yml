@@ -1,4 +1,4 @@
-name: Block PRs with "build error" label
+name: Check PRs label
 on:
   pull_request:
     types:
