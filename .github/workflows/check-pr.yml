@@ -1,0 +1,26 @@
+name: Block PRs with "build error" label
+on:
+  pull_request:
+    types:
+      - synchronize
+      - opened
+
+jobs:
+  block-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR for "build error" label
+        id: check-label
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const labels = github.context.payload.pull_request.labels.map(label => label.name);
+            const isBuildError = labels.includes('build error');
+            console.log(`Build Error Label Found: ${isBuildError}`);
+            return { buildError: isBuildError }
+
+      - name: Block PR if "build error" label is present
+        if: steps.check-label.outputs.buildError == true && github.ref == 'refs/heads/main'
+        run: |
+          echo "This PR is blocked due to the 'build error' label."
+          exit 1
