@@ -14,12 +14,15 @@ jobs:
   analyze-code-quality:
     runs-on: ubuntu-latest
     steps:
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@v1.9.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+     - uses: actions/checkout@v3.5.3
+       with:
+         # Disabling shallow clone is recommended for improving relevancy of reporting
+         fetch-depth: 0
+     - name: Build and analyze
+       env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=upa-io_quarkus-microservices-chassis
   build-artefact:
     needs: analyze-code-quality
     runs-on: ubuntu-latest
