@@ -6,7 +6,10 @@ on:
     types: [opened, synchronize]
     branches:
       - main
-
+      - fix-order-actions
+  push:
+    branches:
+      - fix-order-actions
 jobs:
   build:
 
