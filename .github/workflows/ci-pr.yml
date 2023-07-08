@@ -4,8 +4,12 @@ on:
   pull_request:
     branches:
       - main
-      - fix-order-actions
     types: [opened, synchronize]
+    paths:
+      - 'src/main/java/**/*.java'
+      - 'src/test/java/**/*.java'
+      - '**/*.properties'
+      - 'pom.xml'
 jobs:
   analyze-code-quality:
     runs-on: ubuntu-latest
