@@ -1,15 +1,11 @@
 
-name: Java CI with Maven
-
+name: PRs validation
 on:
   pull_request:
     branches:
       - main
       - fix-order-actions
     types: [opened, synchronize]
-  push:
-    branches:
-      - fix-order-actions
 jobs:
   analyze-code-quality:
     runs-on: ubuntu-latest
@@ -23,12 +19,18 @@ jobs:
        with:
          distribution: 'temurin'
          java-version: '19'
+     - name: Cache Maven packages
+       uses: actions/cache@v3.3.1
+       with:
+         path: ~/.m2
+         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+         restore-keys: ${{ runner.os }}-m2
      - name: Build and analyze
        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=upa-io_quarkus-microservices-chassis
-  build-artefact:
+  add-label-pr:
     needs: analyze-code-quality
     runs-on: ubuntu-latest
     defaults:
@@ -113,6 +115,5 @@ jobs:
             repo: context.repo.repo,
             labels: ['build error']
           })
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3.0.2

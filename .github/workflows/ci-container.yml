@@ -1,6 +1,5 @@
 
 name: Java CI with Docker
-
 on:
   workflow_dispatch:
   push:
@@ -8,14 +7,12 @@ on:
       - 'main'
     tags:
       - 'v*'
-
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-
     steps:
       - uses: actions/checkout@v3.5.3
       - name: Set up JDK 19 Temurin
@@ -23,7 +20,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '19'
-
       - name: Cache Maven packages
         uses: actions/cache@v3.3.1
         with:
