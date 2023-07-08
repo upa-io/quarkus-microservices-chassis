@@ -18,6 +18,11 @@ jobs:
        with:
          # Disabling shallow clone is recommended for improving relevancy of reporting
          fetch-depth: 0
+     - name: Set up JDK 19 Temurin for job analyze-code-quality
+       uses: actions/setup-java@v3.11.0
+       with:
+         distribution: 'temurin'
+         java-version: '19'
      - name: Build and analyze
        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -31,8 +36,8 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v3.5.3
-    - name: Set up JDK 19 Temurin
-      uses: actions/setup-java@v3
+    - name: Set up JDK 19 Temurin for build-artefact
+      uses: actions/setup-java@v3.11.0
       with:
         distribution: 'temurin'
         java-version: '19'
