@@ -31,15 +31,11 @@ jobs:
          restore-keys: ${{ runner.os }}-m2
      - name: Build with Maven
        run: mvn clean install
-     - name: SonarCloud Scan
-       uses: SonarSource/sonarcloud-github-action@v1.9.1
+     - name: Build and analyze
        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-       with:
-        args:
-          -Dsonar.projectKey=upa-io_quarkus-microservices-chassis
-          -Dsonar.organization=upa-io
+       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=upa-io_quarkus-microservices-chassis
   add-label-pr:
     needs: analyze-code-quality
     runs-on: ubuntu-latest
