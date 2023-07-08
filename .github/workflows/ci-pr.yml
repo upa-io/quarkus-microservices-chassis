@@ -1,13 +1,11 @@
 
-name: Java CI with Maven
-
+name: PRs validation
 on:
   pull_request:
     branches:
       - main
       - fix-order-actions
     types: [opened, synchronize]
-
 jobs:
   analyze-code-quality:
     runs-on: ubuntu-latest
@@ -103,6 +101,5 @@ jobs:
             repo: context.repo.repo,
             labels: ['build error']
           })
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3.0.2
