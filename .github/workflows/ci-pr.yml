@@ -1,35 +1,58 @@
 
-name: Java CI with Maven
-
+name: PRs validation
 on:
   pull_request:
-    types: [opened, synchronize]
     branches:
       - main
-
+    types: [opened, synchronize]
+    paths:
+      - 'src/main/java/**/*.java'
+      - 'src/test/java/**/*.java'
+      - '**/*.properties'
+      - 'pom.xml'
 jobs:
-  build:
-
+  analyze-code-quality:
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v3.5.3
+       with:
+         # Disabling shallow clone is recommended for improving relevancy of reporting
+         fetch-depth: 0
+     - name: Set up JDK 19 Temurin for job analyze-code-quality
+       uses: actions/setup-java@v3.11.0
+       with:
+         distribution: 'temurin'
+         java-version: '19'
+     - name: Cache Maven packages
+       uses: actions/cache@v3.3.1
+       with:
+         path: ~/.m2
+         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+         restore-keys: ${{ runner.os }}-m2
+     - name: Build and analyze
+       env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+       run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=upa-io_quarkus-microservices-chassis
+  add-label-pr:
+    needs: analyze-code-quality
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-
     steps:
     - uses: actions/checkout@v3.5.3
-    - name: Set up JDK 19 Temurin
-      uses: actions/setup-java@v3
+    - name: Set up JDK 19 Temurin for build-artefact
+      uses: actions/setup-java@v3.11.0
       with:
         distribution: 'temurin'
         java-version: '19'
-    
     - name: Cache Maven packages
       uses: actions/cache@v3.3.1
       with:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-    
     - name: Build with Maven
       if: ${{ success() }}
       run: |
@@ -38,7 +61,6 @@ jobs:
         else
           echo "BUILD_STATUS=false" >> $GITHUB_ENV
         fi
-
     - name: Resolve build error and add build successful label
       if: ${{ env.BUILD_STATUS && contains(github.event.pull_request.labels.*.name, 'build error') }}
       uses: actions/github-script@v6
@@ -57,7 +79,6 @@ jobs:
              repo: context.repo.repo,
              labels: ['build successful']
           })
-
     - name: Resolve build successful and add build error label
       if: ${{ !env.BUILD_STATUS && contains(github.event.pull_request.labels.*.name, 'build successful') }}
       uses: actions/github-script@v6
@@ -76,7 +97,6 @@ jobs:
              repo: context.repo.repo,
              labels: ['build error']
           })
-
     - name: Add label build successful to PR
       if: ${{ env.BUILD_STATUS && !contains(github.event.pull_request.labels.*.name, 'build successful') }}
       uses: actions/github-script@v6
@@ -88,7 +108,6 @@ jobs:
             repo: context.repo.repo,
             labels: ['build successful']
           })
-
     - name: Add label build error to PR
       if: ${{ !env.BUILD_STATUS && !contains(github.event.pull_request.labels.*.name, 'build error') }}
       uses: actions/github-script@v6
@@ -100,7 +119,5 @@ jobs:
             repo: context.repo.repo,
             labels: ['build error']
           })
-
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3.0.2
