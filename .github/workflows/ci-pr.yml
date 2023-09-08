@@ -14,7 +14,7 @@ jobs:
   analyze-code-quality:
     runs-on: ubuntu-latest
     steps:
-     - uses: actions/checkout@v3.6.0
+     - uses: actions/checkout@v4.0.0
        with:
          # Disabling shallow clone is recommended for improving relevancy of reporting
          fetch-depth: 0
@@ -41,7 +41,7 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/checkout@v3.6.0
+    - uses: actions/checkout@v4.0.0
     - name: Set up JDK 19 Temurin for build-artefact
       uses: actions/setup-java@v3.11.0
       with:
