@@ -7,6 +7,12 @@ on:
       - 'main'
     tags:
       - 'v*'
+    paths:
+      - 'pom.xml'
+      - 'src/main/java/**/*.java'
+      - 'src/main/test/**/*.java'
+      - '**/*.properties'
+
 jobs:
   build:
     runs-on: ubuntu-latest
