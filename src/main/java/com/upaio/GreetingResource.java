@@ -4,8 +4,7 @@ import org.jboss.logging.Logger;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/hello")
 public class GreetingResource {
@@ -13,10 +12,9 @@ public class GreetingResource {
     private static final Logger LOG = Logger.getLogger(GreetingResource.class);
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String hello() {
+    public Response hello() {
         LOG.debug("Hi from debug");
         LOG.info("Hi from info");
-        return "Hello from RESTEasy Reactive";
+        return Response.ok("Hello from RESTEasy Reactive").build();
     }
 }
