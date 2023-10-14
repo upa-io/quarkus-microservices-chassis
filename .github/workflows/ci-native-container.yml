@@ -30,19 +30,7 @@ jobs:
 
       - name: Generate with Maven native-resources
         if: ${{ success() }}
-        run: mvn clean package -Dquarkus.package.type=native-sources -Dquarkus.native.container-build=true -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-20
-      
-      - name: Build Native Container Image
-        run: |
-          cd target/native-sources
-          docker run \
-            --user $(id -ur):$(id -gr) \
-            --rm \
-            -v $(pwd):/target/native-sources \
-            -w /target/native-sources \
-            --entrypoint /bin/sh \
-            $(cat native-builder.image) \
-            -c "native-image $(cat native-image.args) -J-Xmx4g"
+        run: mvn install -Dnative -Dquarkus.native.container-build=true -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-20
       
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3.0.0
@@ -54,7 +42,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5.0.0
         with:
-          context: .
+          context: src/main/docker/Dockerfile.distroless
           push: true
           tags: latest
           labels: latest
