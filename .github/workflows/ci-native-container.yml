@@ -1,0 +1,67 @@
+
+name: Java CI with Docker
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - 'v*'
+    paths:
+      - 'pom.xml'
+      - 'src/main/java/**/*.java'
+      - 'src/main/test/**/*.java'
+      - '**/*.properties'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4.1.0
+      - name: Set up JDK 20 Temurin
+        uses: actions/setup-java@v3.13.0
+        with:
+          distribution: 'temurin'
+          java-version: '20'
+      - name: Cache Maven packages
+        uses: actions/cache@v3.3.2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Generate with Maven native-resources
+        if: ${{ success() }}
+        run: mvn clean package -Dquarkus.package.type=native-sources -Dquarkus.native.container-build=true -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-20
+      
+      - name: Build Native Image
+        run: |
+          cd target/native-sources
+          docker run \
+            -it \
+            --user $(id -ur):$(id -gr) \
+            --rm \
+            -v ${{ github.workspace }}:/work \
+            -w /work \
+            --entrypoint /bin/sh \
+            $(cat native-builder.image) \
+            -c "native-image $(cat native-image.args) -J-Xmx4g"
+      
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5.0.0
+        with:
+          context: .
+          push: true
+          tags: latest
+          labels: latest
