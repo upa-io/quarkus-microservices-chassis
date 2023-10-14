@@ -46,3 +46,5 @@ jobs:
           push: true
           tags: latest
           labels: latest
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.REGISTRY_TOKEN }}
