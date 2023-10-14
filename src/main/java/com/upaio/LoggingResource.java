@@ -17,7 +17,7 @@ public class LoggingResource {
         return Level.INFO;
     }
 
-    @GET
+    @POST
     @Path("/{logger}")
     @Produces("text/plain")
     public Level logger(@PathParam("logger") String loggerName, @QueryParam("level") String level) {

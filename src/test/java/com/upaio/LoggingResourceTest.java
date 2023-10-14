@@ -12,7 +12,7 @@ class LoggingResourceTest {
     @Test
      void testLoggingEndpoint(){
         given()
-                .when().get("/logging/com.upaio")
+                .when().post("/logging/com.upaio")
                 .then()
                 .statusCode(200);
     }
