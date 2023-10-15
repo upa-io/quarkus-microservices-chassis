@@ -36,6 +36,12 @@ jobs:
       - name: Build with Maven
         if: ${{ success() }}
         run: mvn -B package --file pom.xml -DskipTests
+      
+      - name: Get version from pom.xml 
+        id: get-version 
+        run: | 
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) 
+          echo "version=${VERSION}" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.0.0
@@ -66,5 +72,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: quarkus-microservices-chassis:${{ env.version }}
+          
