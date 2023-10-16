@@ -40,8 +40,8 @@ jobs:
         with:
           name: target
           path: target
-    
   push-to-registry:
+    needs: build
     runs-on: ubuntu-latest
     defaults:
       run:
