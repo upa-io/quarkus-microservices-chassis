@@ -36,7 +36,8 @@ jobs:
           mvn install \
           -DskipTests \
           -Dnative \
-          -Dquarkus.native.container-build=true \
+          -Dquarkus.native.remote-container-build=true \
+          -Dquarkus.native.container-runtime=docker \
           -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21
         # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
