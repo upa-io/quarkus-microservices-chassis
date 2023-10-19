@@ -1,5 +1,5 @@
 # First stage - install the dependencies in an intermediate container
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.8 AS BUILD
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.8 as BUILD
 RUN microdnf install freetype
 
 # Second stage - copy the dependencies
@@ -14,4 +14,5 @@ WORKDIR /work/
 COPY target/*-runner /work/application
 RUN chmod 775 /work
 EXPOSE 8080
+RUN chmod +x /work/application
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
