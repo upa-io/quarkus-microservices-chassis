@@ -24,7 +24,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'mandrel'
-          version: 'mandrel-21.3.0.0-Final'
+          version: 'mandrel-23.1.0.0-Final'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: Cache Maven packages
