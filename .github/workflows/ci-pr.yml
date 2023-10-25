@@ -120,4 +120,4 @@ jobs:
             labels: ['build error']
           })
     - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@v3.0.2
+      uses: advanced-security/maven-dependency-submission-action@v3.0.3
