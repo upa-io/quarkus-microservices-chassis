@@ -1,18 +1,26 @@
-# First stage - install the dependencies in an intermediate container
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.8 as BUILD
-RUN microdnf install freetype
+## Stage 1 : build with maven builder image with native capabilities
+FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS build
+COPY --chown=quarkus:quarkus mvnw /code/mvnw
+COPY --chown=quarkus:quarkus .mvn /code/.mvn
+COPY --chown=quarkus:quarkus pom.xml /code/
+USER quarkus
+WORKDIR /code
+RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
+COPY src /code/src
+RUN ./mvnw package -Dnative
 
-# Second stage - copy the dependencies
+## Stage 2 : create the docker final image
 FROM quay.io/quarkus/quarkus-micro-image:2.0
-COPY --from=BUILD \
-   /lib64/libfreetype.so.6 \
-   /lib64/libbz2.so.1 \
-   /lib64/libpng16.so.16 \
-   /lib64/
-
 WORKDIR /work/
-COPY target/*-runner /work/application
-RUN chmod 775 /work
+COPY --from=build /code/target/*-runner /work/application
+
+# set up permissions for user `1001`
+RUN chmod 775 /work /work/application \
+  && chown -R 1001 /work \
+  && chmod -R "g+rwX" /work \
+  && chown -R 1001:root /work
+
 EXPOSE 8080
-RUN chmod +x /work/application
+USER 1001
+
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
