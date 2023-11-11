@@ -1,5 +1,5 @@
 
-name: CI - Build and push to GitHub Container Registry
+name: Container Image CI Native
 on:
   workflow_dispatch:
   push:
