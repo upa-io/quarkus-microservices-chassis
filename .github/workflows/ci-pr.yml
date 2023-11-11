@@ -18,11 +18,11 @@ jobs:
        with:
          # Disabling shallow clone is recommended for improving relevancy of reporting
          fetch-depth: 0
-     - name: Set up JDK 19 Temurin for job analyze-code-quality
+     - name: Set up JDK 21 Temurin for job analyze-code-quality
        uses: actions/setup-java@v3.13.0
        with:
          distribution: 'temurin'
-         java-version: '19'
+         java-version: '21-ea'
      - name: Cache Maven packages
        uses: actions/cache@v3.3.2
        with:
@@ -42,11 +42,11 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v4.1.1
-    - name: Set up JDK 19 Temurin for build-artefact
+    - name: Set up JDK 21 Temurin for build-artefact
       uses: actions/setup-java@v3.13.0
       with:
         distribution: 'temurin'
-        java-version: '19'
+        java-version: '21-ea'
     - name: Cache Maven packages
       uses: actions/cache@v3.3.2
       with:
