@@ -19,7 +19,7 @@ jobs:
          # Disabling shallow clone is recommended for improving relevancy of reporting
          fetch-depth: 0
      - name: Set up JDK 21 Temurin for job analyze-code-quality
-       uses: actions/setup-java@v4.1.0
+       uses: actions/setup-java@v4.2.1
        with:
          distribution: 'temurin'
          java-version: '21-ea'
@@ -43,7 +43,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.2
     - name: Set up JDK 21 Temurin for build-artefact
-      uses: actions/setup-java@v4.1.0
+      uses: actions/setup-java@v4.2.1
       with:
         distribution: 'temurin'
         java-version: '21-ea'
